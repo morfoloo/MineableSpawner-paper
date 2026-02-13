@@ -46,10 +46,11 @@ public class SpawnerBreak implements Listener {
             case SILVERFISH -> Material.SILVERFISH_SPAWN_EGG;
             case BLAZE -> Material.BLAZE_SPAWN_EGG;
             case MAGMA_CUBE -> Material.MAGMA_CUBE_SPAWN_EGG;
-            default -> Material.SPAWNER;
+            default -> spawnEgg = null;
         };
 
         ItemStack spawnerItem = new ItemStack(Material.SPAWNER);
+        block.getWorld().dropItemNaturally(block.getLocation(), spawnerItem);
         BlockStateMeta meta = (BlockStateMeta) spawnerItem.getItemMeta();
         if (meta != null) {
             ((CreatureSpawner) meta.getBlockState()).setSpawnedType(spawner.getSpawnedType());
