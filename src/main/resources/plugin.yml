@@ -1,0 +1,5 @@
+name: MineableSpawner
+descriprion: Плагин, который делает спавнеры добываемыми
+version: 1.0
+main: com.vinden.MineableSpawner.MineableSpawner
+api-version: 1.21
