@@ -50,14 +50,16 @@ public class SpawnerBreak implements Listener {
         };
 
         ItemStack spawnerItem = new ItemStack(Material.SPAWNER);
-        block.getWorld().dropItemNaturally(block.getLocation(), spawnerItem);
         BlockStateMeta meta = (BlockStateMeta) spawnerItem.getItemMeta();
         if (meta != null) {
-            ((CreatureSpawner) meta.getBlockState()).setSpawnedType(spawner.getSpawnedType());
+            CreatureSpawner newSpawner = (CreatureSpawner) meta.getBlockState();
+            newSpawner.setSpawnedType(spawner.getSpawnedType());
+            meta.setBlockState(newSpawner);
             spawnerItem.setItemMeta(meta);
         }
-
         block.getWorld().dropItemNaturally(block.getLocation(), spawnerItem);
-        block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(spawnEgg));
+        if (spawnEgg != null) {
+            block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(spawnEgg));
+        }
     }
 }
