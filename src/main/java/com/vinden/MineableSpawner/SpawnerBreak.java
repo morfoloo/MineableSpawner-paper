@@ -61,5 +61,6 @@ public class SpawnerBreak implements Listener {
         if (spawnEgg != null) {
             block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(spawnEgg));
         }
+        block.setType(Material.AIR);
     }
 }
