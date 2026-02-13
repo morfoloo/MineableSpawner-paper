@@ -23,20 +23,21 @@ public class SpawnerBreak implements Listener {
     @EventHandler
     public void onSpawnerBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-
         if (block.getType() != Material.SPAWNER) return;
-
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
-
-        if (tool == null || !tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
-            event.setDropItems(false);
+        if (!tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
             return;
         }
 
-        event.setDropItems(false);
-
+        event.setDropItems(false); // отменяем стандартный дроп
         CreatureSpawner spawner = (CreatureSpawner) block.getState();
+        ItemStack spawnerItem = new ItemStack(Material.SPAWNER);
+        BlockStateMeta meta = (BlockStateMeta) spawnerItem.getItemMeta();
+        if (meta != null) {
+            ((CreatureSpawner) meta.getBlockState()).setSpawnedType(spawner.getSpawnedType());
+            spawnerItem.setItemMeta(meta);
+        }
 
         Material spawnEgg = switch (spawner.getSpawnedType()) {
             case ZOMBIE -> Material.ZOMBIE_SPAWN_EGG;
@@ -46,17 +47,9 @@ public class SpawnerBreak implements Listener {
             case SILVERFISH -> Material.SILVERFISH_SPAWN_EGG;
             case BLAZE -> Material.BLAZE_SPAWN_EGG;
             case MAGMA_CUBE -> Material.MAGMA_CUBE_SPAWN_EGG;
-            default -> spawnEgg = null;
+            default -> null;
         };
 
-        ItemStack spawnerItem = new ItemStack(Material.SPAWNER);
-        BlockStateMeta meta = (BlockStateMeta) spawnerItem.getItemMeta();
-        if (meta != null) {
-            CreatureSpawner newSpawner = (CreatureSpawner) meta.getBlockState();
-            newSpawner.setSpawnedType(spawner.getSpawnedType());
-            meta.setBlockState(newSpawner);
-            spawnerItem.setItemMeta(meta);
-        }
         block.getWorld().dropItemNaturally(block.getLocation(), spawnerItem);
         if (spawnEgg != null) {
             block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(spawnEgg));
